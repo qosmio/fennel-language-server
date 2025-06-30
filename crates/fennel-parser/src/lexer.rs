@@ -276,8 +276,8 @@ mod tests {
     #[test]
     fn symbol() {
         assert_lex(
-            "?我❤️logos#$%^*-+=/|\\ local locals :into :intobreach logos:into \
-             _",
+            "?我❤️logos#$%^*-+=/|\\ local locals :into :intobreach \
+             logos:into _",
             &[
                 Token::new(
                     SyntaxKind::SYMBOL,

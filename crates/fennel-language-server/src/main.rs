@@ -362,10 +362,11 @@ impl tower_lsp::LanguageServer for Backend {
     async fn did_change(&self, params: DidChangeTextDocumentParams) {
         let uri = params.text_document.uri;
         let version = params.text_document.version;
-        let mut doc = if let Some(doc) = self.doc_map.get_mut(&uri) {
-            doc
-        } else {
-            return;
+        let mut doc = match self.doc_map.get_mut(&uri) {
+            Some(doc) => doc,
+            _ => {
+                return;
+            }
         };
 
         params.content_changes.iter().for_each(|change| {
@@ -485,20 +486,25 @@ impl Backend {
         if on_save_or_open {
             self.on_save_or_open_errors
                 .insert(uri.clone(), ast.on_save_errors().cloned().collect());
-        } else if let Some(mut errs) =
-            self.on_save_or_open_errors.get_mut(&uri)
-        {
-            let new_errors: Vec<&fennel_parser::Error> =
-                ast.on_save_errors().collect();
-            errs.retain(|e| new_errors.contains(&e))
+        } else {
+            match self.on_save_or_open_errors.get_mut(&uri) {
+                Some(mut errs) => {
+                    let new_errors: Vec<&fennel_parser::Error> =
+                        ast.on_save_errors().collect();
+                    errs.retain(|e| new_errors.contains(&e))
+                }
+                _ => {}
+            }
         };
 
-        let errors: Vec<fennel_parser::Error> = if let Some(on_save_errors) =
-            self.on_save_or_open_errors.get(&uri)
+        let errors: Vec<fennel_parser::Error> = match self
+            .on_save_or_open_errors
+            .get(&uri)
         {
-            ast.errors().chain(on_save_errors.iter()).cloned().collect()
-        } else {
-            ast.errors().cloned().collect()
+            Some(on_save_errors) => {
+                ast.errors().chain(on_save_errors.iter()).cloned().collect()
+            }
+            _ => ast.errors().cloned().collect(),
         };
 
         let diagnostics = errors.into_iter().flat_map(|error| {

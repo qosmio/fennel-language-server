@@ -270,7 +270,9 @@ impl UntilClause {
 }
 
 impl Provider {
-    pub(crate) fn errors(&self) -> impl Iterator<Item = Option<Error>> {
+    pub(crate) fn errors(
+        &self,
+    ) -> impl Iterator<Item = Option<Error>> + use<> {
         match self {
             Self::List(n) => {
                 vec![n.macro_whitespace(), n.empty_list()].into_iter()

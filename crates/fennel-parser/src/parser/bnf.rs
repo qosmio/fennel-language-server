@@ -1,6 +1,6 @@
 use rowan::TextRange;
 
-use crate::{parser::sets::TokenSet, SyntaxKind};
+use crate::{SyntaxKind, parser::sets::TokenSet};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub(crate) struct Rule {
@@ -42,22 +42,22 @@ macro_rules! notation {
     (($kind:ident)) => {
         crate::parser::bnf::Rule { expect: $kind, notation: Once }
     };
-    (($kind:ident ? $set:expr)) => {
+    (($kind:ident ? $set:expr_2021)) => {
         crate::parser::bnf::Rule { expect: $kind, notation: Optional($set) }
     };
-    (($kind:ident * $set:expr)) => {
+    (($kind:ident * $set:expr_2021)) => {
         crate::parser::bnf::Rule { expect: $kind, notation: Repeat($set) }
     };
-    (($kind:ident + $set:expr)) => {
+    (($kind:ident + $set:expr_2021)) => {
         crate::parser::bnf::Rule { expect: $kind, notation: Repeat1($set) }
     };
-    (($kind:ident ** $set:expr, $set2:expr)) => {
+    (($kind:ident ** $set:expr_2021, $set2:expr_2021)) => {
         crate::parser::bnf::Rule {
             expect: $kind,
             notation: RepeatPeek($set, $set2),
         }
     };
-    (($kind:ident ++ $set:expr, $set2:expr)) => {
+    (($kind:ident ++ $set:expr_2021, $set2:expr_2021)) => {
         crate::parser::bnf::Rule {
             expect: $kind,
             notation: Repeat1Peek($set, $set2),

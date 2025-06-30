@@ -111,14 +111,16 @@ impl Root {
             .map(|kv_table| kv_table.cast_hashmap())
     }
 
-    pub(crate) fn resources(&self) -> impl Iterator<Item = PathBuf> {
+    pub(crate) fn resources(&self) -> impl Iterator<Item = PathBuf> + use<> {
         self.syntax()
             .descendants()
             .filter_map(SymbolCall::cast)
             .filter_map(|n| n.require())
     }
 
-    pub(crate) fn provide_errors(&self) -> impl Iterator<Item = Error> {
+    pub(crate) fn provide_errors(
+        &self,
+    ) -> impl Iterator<Item = Error> + use<> {
         self.syntax()
             .descendants()
             .filter_map(Provider::cast)
@@ -128,7 +130,8 @@ impl Root {
 
     pub(crate) fn suppress_errors(
         &self,
-    ) -> impl Iterator<Item = (TextRange, Vec<SuppressErrorKind>)> {
+    ) -> impl Iterator<Item = (TextRange, Vec<SuppressErrorKind>)> + use<>
+    {
         self.syntax()
             .descendants()
             .filter_map(Suppress::cast)
@@ -228,7 +231,7 @@ impl Root {
     // TODO: refactor
     pub(crate) fn delimiter_whitespace_errors(
         &self,
-    ) -> impl Iterator<Item = Error> {
+    ) -> impl Iterator<Item = Error> + use<> {
         const DELIMITER: &[SyntaxKind] = &[
             SyntaxKind::L_PAREN,
             SyntaxKind::L_BRACE,
@@ -320,7 +323,7 @@ impl KvTable {
 
     pub(crate) fn iter(
         &self,
-    ) -> impl Iterator<Item = (Option<EvalAst>, Option<EvalAst>)> {
+    ) -> impl Iterator<Item = (Option<EvalAst>, Option<EvalAst>)> + use<> {
         self.syntax()
             .children()
             .filter(|n| n.kind() == SyntaxKind::N_KV_PAIR)

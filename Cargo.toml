@@ -1,5 +1,19 @@
 [workspace]
 members = ["crates/*"]
+# edition = "2024"
+resolver = "3"
+
+# [package]
+# name = "fennel-language-server"
+# version = "0.1.0"
+# edition = "2024"
+# rust-version = "1.85"
+# description = "Native bindings to a portion of libgit"
+
+# [build-dependencies]
+# dashmap = "6.1.0"
+# rowan = "0.16.1"
+# tower-lsp = "0.18.0"
 
 [profile.release]
 lto = true

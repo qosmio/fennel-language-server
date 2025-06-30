@@ -178,11 +178,11 @@ impl Ast {
         Some(ranges)
     }
 
-    pub fn completion(
-        &self,
+    pub fn completion<'a>(
+        &'a self,
         offset: u32,
         trigger: Option<String>,
-    ) -> (LSymbols, Globals) {
+    ) -> (LSymbols<'a>, Globals) {
         let root = SyntaxNode::new_root(self.root.clone());
         let token =
             root.token_at_offset(TextSize::from(offset)).right_biased();
@@ -551,7 +551,10 @@ impl Ast {
         self.l_symbols.get(offset)
     }
 
-    fn l_symbol_by_r(&self, r_symbol: &models::RSymbol) -> FindLSymbol {
+    fn l_symbol_by_r<'a>(
+        &'a self,
+        r_symbol: &models::RSymbol,
+    ) -> FindLSymbol<'a> {
         match r_symbol.special {
             models::SpecialKind::Normal
             | models::SpecialKind::MacroUnquote => self
